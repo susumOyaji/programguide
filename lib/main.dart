@@ -70,16 +70,16 @@ class _MyHomePageState extends State<_MyHomePage> {
   //    List.generate(10, (index) => index == 0 ? true : false);
 
   static List<Map<String, dynamic>> unsetdata = [
-    {"Id": 0, "ButtonName": "Button1", "SearchWard": ""},
-    {"Id": 1, "ButtonName": "Button2", "SearchWard": ""},
-    {"Id": 2, "ButtonName": "Button3", "SearchWard": ""},
-    {"Id": 3, "ButtonName": "Button4", "SearchWard": ""},
-    {"Id": 4, "ButtonName": "Button5", "SearchWard": ""},
-    {"Id": 5, "ButtonName": "Button6", "SearchWard": ""},
-    {"Id": 6, "ButtonName": "Button7", "SearchWard": ""},
-    {"Id": 7, "ButtonName": "Button8", "SearchWard": ""},
-    {"Id": 8, "ButtonName": "Button9", "SearchWard": ""},
-    {"Id": 9, "ButtonName": "Button10", "SearchWard": ""}
+    {"Id": 0, "ButtonName": "", "SearchWard": ""},
+    {"Id": 1, "ButtonName": "", "SearchWard": ""},
+    {"Id": 2, "ButtonName": "", "SearchWard": ""},
+    {"Id": 3, "ButtonName": "", "SearchWard": ""},
+    {"Id": 4, "ButtonName": "", "SearchWard": ""},
+    {"Id": 5, "ButtonName": "", "SearchWard": ""},
+    {"Id": 6, "ButtonName": "", "SearchWard": ""},
+    {"Id": 7, "ButtonName": "", "SearchWard": ""},
+    {"Id": 8, "ButtonName": "", "SearchWard": ""},
+    {"Id": 9, "ButtonName": "", "SearchWard": ""}
   ];
 
   @override
@@ -415,7 +415,6 @@ class _MyHomePageState extends State<_MyHomePage> {
       context: context,
       builder: (BuildContext context) {
         _textEditingController.text = stockdataList[index]['Id'].toString();
-
         _textEditingController2.text =
             stockdataList[index]['ButtonName'].toString();
         _textEditingController3.text =
@@ -432,7 +431,7 @@ class _MyHomePageState extends State<_MyHomePage> {
               ),
               TextField(
                 controller: _textEditingController3,
-                decoration: const InputDecoration(hintText: 'SearchWard'),
+                decoration: const InputDecoration(hintText: 'SearchWard1'),
               ),
             ],
           ),
@@ -610,6 +609,15 @@ class _MyHomePageState extends State<_MyHomePage> {
               }),
             );
           }),
+        ),
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              // ボタンがタップされたときの処理をここに書きます
+              log('ElevatedButton pressed');
+            },
+            child: const Text('ElevatedButton'),
+          ),
         ),
       ],
     );
@@ -831,7 +839,8 @@ class _MyHomePageState extends State<_MyHomePage> {
               child: Row(
                 children: [
                   const Text('Number of Detected Pages:  ',
-                      style: TextStyle(color: Colors.greenAccent, fontSize: 16)),
+                      style:
+                          TextStyle(color: Colors.greenAccent, fontSize: 16)),
                   ElevatedButton(
                     onPressed: () {
                       goToPreviousPage();
@@ -847,8 +856,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                     width: 50.0,
                     child: Text(
                       fraction,
-                      style:
-                          const TextStyle(color: Colors.greenAccent, fontSize: 20),
+                      style: const TextStyle(
+                          color: Colors.greenAccent, fontSize: 20),
                     ),
                   ),
                   ElevatedButton(
@@ -857,7 +866,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                       goToNextPage();
                       const Text('Next Page');
                     },
-                     style: ElevatedButton.styleFrom(
+                    style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.yellowAccent, // ボタンの背景色
                       foregroundColor: Colors.black, // テキストの色
                     ),
@@ -894,11 +903,11 @@ class _MyHomePageState extends State<_MyHomePage> {
                 flex: 0,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 0, vertical: 0),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                     fixedSize: const Size(50, 50),
                     backgroundColor: Colors.amber[900], //ボタンの背景色
-                    shape:const CircleBorder(),
+                    shape: const CircleBorder(),
                   ),
                   onPressed: () {
                     //runCommand();
@@ -907,7 +916,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                   onLongPress: () {
                     //alertDialog(index);
                   },
-                  child: Text((index+1).toString(),
+                  child: Text((index + 1).toString(),
                       style: const TextStyle(
                         fontSize: 15.0,
                         color: Colors.black,
@@ -1021,7 +1030,6 @@ class _MyHomePageState extends State<_MyHomePage> {
             return Text('${snapshot.error}');
           }
           List<Map<String, dynamic>> dataList = snapshot.data!;
-
           return Container(
             //width: 1800,
             width: MediaQuery.of(context).size.width * 1.5,
@@ -1033,47 +1041,61 @@ class _MyHomePageState extends State<_MyHomePage> {
             child: Column(
               children: <Widget>[
                 const SizedBox(height: 20.0),
+                //Expanded(
                 Container(
                   //width: 750,
                   width: MediaQuery.of(context).size.width * 0.9,
-                  height: 100,
+                  // The height is not needed as it will be automatically adjusted by Expanded
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
                     color: Colors.black,
                   ),
                   child: buttonView1(stockdataList),
                 ),
+                //),
+                //Expanded(
                 Container(
                   margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                   //width: 750,
                   width: MediaQuery.of(context).size.width * 0.9,
-                  height: 50,
+                  height: 50.0,
+                  // The height is not needed as it will be automatically adjusted by Expanded
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
                     color: Colors.black,
                   ),
                   child: search(dataList.length),
                 ),
-                Container(
-                  //width: 750,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 600,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.black,
+                //),
+                Expanded(
+                  child: Container(
+                    //width: 750,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    //height: 100,
+                    // The height is not needed as it will be automatically adjusted by Expanded
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.black,
+                    ),
+                    child: listView(dataList),
                   ),
-                  child: listView(dataList),
                 ),
+                //Expanded(
                 SizedBox(
                   //width: 750.0,
                   width: MediaQuery.of(context).size.width * 0.9,
+                  // The height is not needed as it will be automatically adjusted by Expanded
                   child: Text(systemState),
                 ),
+                //),
+                //Expanded(
                 SizedBox(
                   //width: 750.0,
                   width: MediaQuery.of(context).size.width * 0.9,
+                  // The height is not needed as it will be automatically adjusted by Expanded
                   child: Text(outputState),
                 ),
+                //),
               ],
             ),
           );
