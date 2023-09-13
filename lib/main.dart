@@ -610,15 +610,7 @@ class _MyHomePageState extends State<_MyHomePage> {
             );
           }),
         ),
-        Center(
-          child: ElevatedButton(
-            onPressed: () {
-              // ボタンがタップされたときの処理をここに書きます
-              log('ElevatedButton pressed');
-            },
-            child: const Text('ElevatedButton'),
-          ),
-        ),
+       
       ],
     );
   }
