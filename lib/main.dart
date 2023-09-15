@@ -259,9 +259,18 @@ class _MyHomePageState extends State<_MyHomePage> {
     List<Map<String, dynamic>> dataList = [];
     // スクレイピング対象の要素を抽出してリストに追加する処理
     // 必要に応じて実装
-    final tvspanElements = document.querySelectorAll('h2').toList();
+    final tvspanElements = document.querySelectorAll('h2 a').toList();
+
+    
+    // 各 <a> 要素の href 属性を表示
+    tvspanElements.forEach((aElement) {
+      final href = aElement.attributes['href'].text;
+      log('href 属性: ${href}');
+     
+    });
+
     //if (tvspanElements.length < count) {
-    count = (tvspanElements.length) - 2;
+    count = (tvspanElements.length);
     //}
     if (count > 0) {
       final limitedElements = tvspanElements.sublist(
@@ -610,7 +619,6 @@ class _MyHomePageState extends State<_MyHomePage> {
             );
           }),
         ),
-       
       ],
     );
   }
