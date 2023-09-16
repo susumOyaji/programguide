@@ -259,15 +259,11 @@ class _MyHomePageState extends State<_MyHomePage> {
     List<Map<String, dynamic>> dataList = [];
     // スクレイピング対象の要素を抽出してリストに追加する処理
     // 必要に応じて実装
+    // h2要素内のテキストを取得
     final tvspanElements = document.querySelectorAll('h2 a').toList();
 
-    
-    // 各 <a> 要素の href 属性を表示
-    tvspanElements.forEach((aElement) {
-      final href = aElement.attributes['href'].text;
-      log('href 属性: ${href}');
-     
-    });
+    // h2要素内のテキストを取得
+    //final h2Text = document.querySelector('h2 a')?.text;
 
     //if (tvspanElements.length < count) {
     count = (tvspanElements.length);
@@ -276,17 +272,17 @@ class _MyHomePageState extends State<_MyHomePage> {
       final limitedElements = tvspanElements.sublist(
           0, count); // 最初のcount要素のみを取得,元のリストから一部の要素を抽出して新しいサブリストを作成するためのものです
 
-      String? nextText;
       String trimmedText;
-
       List<String> codeArray = [];
-      //int index = 0; // カウンタ変数
+      int index = 0; // カウンタ変数
 
       for (final element in limitedElements) {
-        final nextElement = element.nextElementSibling;
-        if (nextElement != null) {
-          nextText = nextElement.text; //next to 一つ下階層
-          trimmedText = nextText!.replaceAll('\n', '');
+        // 放送日と時間を取得
+        final pElements = document.querySelectorAll('p.utileListProperty');
+        final dateAndTime =
+            pElements.isNotEmpty ? pElements[index].text.trim() : '';
+        if (dateAndTime != null) {
+          trimmedText = dateAndTime.replaceAll('\n', '');
           codeArray = trimmedText.split(' ');
 
           Map<String, dynamic> mapString = {
@@ -301,6 +297,7 @@ class _MyHomePageState extends State<_MyHomePage> {
             "Channels2": codeArray[27]
           };
           dataList.add(mapString);
+          index++;
         }
       }
     } else {
@@ -481,7 +478,8 @@ class _MyHomePageState extends State<_MyHomePage> {
 
   Widget buttonView1(List<Map<String, dynamic>> data) {
     return Row(
-      //crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Theme(
           data: ThemeData(
@@ -573,7 +571,7 @@ class _MyHomePageState extends State<_MyHomePage> {
               children: List.generate(5, (columnIndex) {
                 final index = rowIndex * 5 + columnIndex;
                 return Column(children: [
-                  const SizedBox(width: 110), // ボタンの間の間隔を設定
+                  const SizedBox(width: 105), // ボタンの間の間隔を設定
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: buttonStates[index]
@@ -853,7 +851,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                     child: const Icon(Icons.arrow_left),
                   ),
                   SizedBox(
-                    width: 50.0,
+                    width: 70.0,
                     child: Text(
                       fraction,
                       style: const TextStyle(
