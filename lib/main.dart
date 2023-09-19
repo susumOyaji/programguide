@@ -90,7 +90,8 @@ class _MyHomePageState extends State<_MyHomePage> {
 
     idol = ""; //data[index]["SearchWard"];
     currentPage = 0;
-    scrapePage(currentPage);
+    //scrapePage(currentPage);
+    scrapePageGguid(currentPage);
     //deleteData();
   }
 
@@ -255,26 +256,20 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   Future<List<Map<String, dynamic>>> extractData(document) async {
-    int count = 0;
     List<Map<String, dynamic>> dataList = [];
+    String trimmedText;
+    List<String> codeArray = [];
+    int index = 0; // カウンタ変数
+
     // スクレイピング対象の要素を抽出してリストに追加する処理
-    // 必要に応じて実装
     // h2要素内のテキストを取得
     final tvspanElements = document.querySelectorAll('h2 a').toList();
 
-    // h2要素内のテキストを取得
-    //final h2Text = document.querySelector('h2 a')?.text;
-
-    //if (tvspanElements.length < count) {
-    count = (tvspanElements.length);
-    //}
-    if (count > 0) {
+    if (tvspanElements.isNotEmpty) {
       final limitedElements = tvspanElements.sublist(
-          0, count); // 最初のcount要素のみを取得,元のリストから一部の要素を抽出して新しいサブリストを作成するためのものです
-
-      String trimmedText;
-      List<String> codeArray = [];
-      int index = 0; // カウンタ変数
+          0,
+          tvspanElements
+              .length); // 最初のcount要素のみを取得,元のリストから一部の要素を抽出して新しいサブリストを作成するためのものです
 
       for (final element in limitedElements) {
         // 放送日と時間を取得
@@ -318,63 +313,63 @@ class _MyHomePageState extends State<_MyHomePage> {
     return dataList;
   }
 
-/*
-  Future<List<Map<String, dynamic>>> _fetchStockTv(String idol) async {
+  Future<void> scrapePageGguid(int thispage) async {
+    int totalpages = 0;
     int count = 0;
     int waveint = grandWaves + bsDigital;
 
     String wave = waveint.toString();
     List<Map<String, dynamic>> dataList = [];
 
-    String originalString = idol;
+    String originalString = "King&Prince";
     String encodedString = Uri.encodeComponent(
         originalString); //URL内に特殊文字や予約語（＆等）が含まれる場合にエンコードする、その文字を安全に表現するための方法
+     log(encodedString);
+
 
     // テレビ番組のスケジュールを取得するURLを設定します。
 
-    currentPageUrl =
-        'https://www.tvkingdom.jp/schedulesBySearch.action?stationPlatformId=$wave&condition.keyword=$encodedString&submit=%E6%A4%9C%E7%B4%A2&amp;index=$nextindex'; //←ここに表示させたいURLを入力する
-    //地上波   'https://www.tvkingdom.jp/schedulesBySearch.action?stationPlatformId=1&condition.keyword=HiHi&submit=%E6%A4%9C%E7%B4%A2';
-    //BSデジタルhttps://www.tvkingdom.jp/schedulesBySearch.action?stationPlatformId=2&condition.keyword=HiHI&submit=%E6%A4%9C%E7%B4%A2
+    final uri =
+        Uri.parse('https://bangumi.org/search?q=$encodedString&area_code=23');
+    //https://bangumi.org/talents/keyword_search?q=HiHi jets
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      final document = parser.parse(response.body);
 
-    // URLから応答を取得します。
-    final uri = Uri.parse(currentPageUrl); // URLをURIオブジェクトに変換
-    final tvresponse = await http.get(uri);
-    final tvbody = parser.parse(tvresponse.body);
-
-    //検出件数取得
-    final next = tvbody.getElementsByClassName('listIndexNum mgT5');
-    final nextElement = next[0].text;
-    final itemCountMatch = RegExp(r'(\d+(?:,\d+)?)件中').firstMatch(nextElement);
-    var detections = itemCountMatch?.group(1);
-
-    if (detections != null) {
-      int pages = int.parse(detections.replaceAll(',', ''));
-      totalpages = (pages / 20).ceil();
-      page = totalpages.toString();
+      // スクレイピング対象の要素を抽出して処理
+      //List<Map<String, dynamic>> newData = extractData(document); // 必要に応じて関数を実装
+      setState(() {
+        scrapedData = extractDataGguid(document); //newData;
+        //fraction = "${(extractedNumber / 20).ceil()}/$totalpages";
+      });
+    } else {
+      log('Failed to load page');
     }
+  }
 
-    print("DetectionPages: ${page}");
+  Future<List<Map<String, dynamic>>> extractDataGguid(document) async {
+    List<Map<String, dynamic>> dataList = [];
+    String trimmedText;
+    List<String> codeArray = [];
+    int index = 0; // カウンタ変数
 
-    final tvspanElements = tvbody.querySelectorAll('h2').toList();
-    //if (tvspanElements.length < count) {
-    count = (tvspanElements.length) - 2;
-    //}
-    if (count > 0) {
+    // スクレイピング対象の要素を抽出してリストに追加する処理
+    // h2要素内のテキストを取得
+    final tvspanElements = document.querySelectorAll('.program_title').toList();
+
+    if (tvspanElements.isNotEmpty) {
       final limitedElements = tvspanElements.sublist(
-          0, count); // 最初のcount要素のみを取得,元のリストから一部の要素を抽出して新しいサブリストを作成するためのものです
-
-      String? nextText;
-      String trimmedText;
-
-      List<String> codeArray = [];
-      //int index = 0; // カウンタ変数
+          0,
+          tvspanElements
+              .length); // 最初のcount要素のみを取得,元のリストから一部の要素を抽出して新しいサブリストを作成するためのものです
 
       for (final element in limitedElements) {
-        final nextElement = element.nextElementSibling;
-        if (nextElement != null) {
-          nextText = nextElement.text; //next to 一つ下階層
-          trimmedText = nextText.replaceAll('\n', '');
+        // 放送日と時間を取得
+        final pElements = document.querySelectorAll('.program_supplement');
+        final dateAndTime =
+            pElements.isNotEmpty ? pElements[index].text.trim() : '';
+        if (dateAndTime != null) {
+          trimmedText = dateAndTime.replaceAll('　', ' ');
           codeArray = trimmedText.split(' ');
 
           Map<String, dynamic> mapString = {
@@ -382,15 +377,10 @@ class _MyHomePageState extends State<_MyHomePage> {
             "Date": codeArray[0],
             "Day": codeArray[1],
             "StartTime": codeArray[2],
-            "From": codeArray[3], // spanTexts[29],
-            "EndTime": codeArray[4],
-            "Airtime": codeArray[16],
-            "Channels": codeArray[26],
-            "Channels2": codeArray[27]
+            "Channels": codeArray[3],
           };
-          // オブジェクトをリストに追加
           dataList.add(mapString);
-          //index++; // インクリメント
+          index++;
         }
       }
     } else {
@@ -405,13 +395,11 @@ class _MyHomePageState extends State<_MyHomePage> {
         "Channels": "",
         "Channels2": ""
       };
-      // オブジェクトをリストに追加
       dataList.add(mapString);
     }
-    state = "$wave  $idol";
+
     return dataList;
   }
-*/
 
   void editDialog(index) async {
     Map<String, dynamic> stocknewData = {};
@@ -490,6 +478,28 @@ class _MyHomePageState extends State<_MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                children: [
+                  SizedBox(
+                    height: 25.0,
+                    width: 40.0,
+                    child: Radio(
+                      activeColor: Colors.orange,
+                      value: 1,
+                      groupValue: selectedValue,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedValue = value!;
+                          grandWaves = 0;
+                          bsDigital = 0;
+                          scrapePage(currentPage);
+                        });
+                      },
+                    ),
+                  ),
+                  const Text('G guide', style: TextStyle(color: Colors.white)),
+                ],
+              ),
               Row(
                 children: [
                   SizedBox(
@@ -1014,6 +1024,144 @@ class _MyHomePageState extends State<_MyHomePage> {
             ]));
       });
 
+
+       listViewGguid(dynamic anystock) => ListView.builder(
+      scrollDirection: Axis.vertical,
+      itemCount: anystock!.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Container(
+            margin: const EdgeInsets.only(
+                top: 0.0, left: 10.0, right: 10.0, bottom: 10.0),
+            padding: const EdgeInsets.all(5.0),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.black,
+                  Colors.grey.shade800,
+                ],
+              ),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(5),
+              ),
+            ),
+            child: Row(children: <Widget>[
+              Expanded(
+                flex: 0,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                    fixedSize: const Size(50, 50),
+                    backgroundColor: Colors.amber[900], //ボタンの背景色
+                    shape: const CircleBorder(),
+                  ),
+                  onPressed: () {
+                    //runCommand();
+                    //_asyncEditDialog(context, index);
+                  },
+                  onLongPress: () {
+                    //alertDialog(index);
+                  },
+                  child: Text((index + 1).toString(),
+                      style: const TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.black,
+                        fontFamily: 'NotoSansJP',
+                      )),
+                ),
+              ),
+
+              //SizedBox(width: 15.0,),
+              Expanded(
+                //flex: 6,
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      anystock[index]["Title"],
+                      style: const TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.grey,
+                        fontFamily: 'NoteSansJP',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          anystock[index]["Date"],
+                          style: const TextStyle(
+                              fontFamily: 'NotoSansJP',
+                              fontSize: 15.0,
+                              color: Colors.blue),
+                        ),
+                        Text(
+                          anystock[index]["Day"],
+                          style: const TextStyle(
+                              fontFamily: 'NotoSansJP',
+                              fontSize: 15.0,
+                              color: Colors.blue),
+                        ),
+                        Text(
+                          anystock[index]["StartTime"],
+                          style: const TextStyle(
+                              fontFamily: 'NoteSansJP',
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 15.0,
+                              color: Colors.yellow),
+                        ),
+                        Text(
+                          anystock[index]["StartTime"],
+                          style: const TextStyle(
+                              fontFamily: 'NoteSansJP',
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 15.0,
+                              color: Colors.yellow),
+                        ),
+                        Text(
+                          anystock[index]["StartTime"],
+                          style: const TextStyle(
+                              fontFamily: 'NoteSansJP',
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 15.0,
+                              color: Colors.yellow),
+                        ),
+                        Text(
+                          anystock[index]["StartTime"],
+                          style: const TextStyle(
+                              fontFamily: 'NoteSansJP',
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 15.0,
+                              color: Colors.orange),
+                        ),
+                        Text(
+                          anystock[index]["Channels"],
+                          style: const TextStyle(
+                              fontFamily: 'NoteSansJP',
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 15.0,
+                              color: Colors.red),
+                        ),
+                        Text(
+                          anystock[index]["StartTime"],
+                          style: const TextStyle(
+                              fontFamily: 'NoteSansJP',
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 15.0,
+                              color: Colors.orange),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              //SizedBox(width: 50.0,),
+            ]));
+      });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1075,7 +1223,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                       borderRadius: BorderRadius.circular(5),
                       color: Colors.black,
                     ),
-                    child: listView(dataList),
+                    //child: listView(dataList),
+                    child: listViewGguid(dataList),
                   ),
                 ),
                 //Expanded(
