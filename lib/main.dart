@@ -45,8 +45,9 @@ class _MyHomePageState extends State<_MyHomePage> {
   Future<List<Map<String, dynamic>>>? scrapedData;
   //String currentPageUrl = "";
   //String nextindex = "0";
-  int grandWaves = 0;
-  int bsDigital = 0;
+  String grandWaves = "3";
+  String bsDigital = "1";
+  String skyPerfect = "2";
   int waveint = 0;
 
   //String page = "1";
@@ -183,13 +184,15 @@ class _MyHomePageState extends State<_MyHomePage> {
 
   void goToNextPage() {
     currentPage = currentPage + 20;
-    scrapePage(currentPage);
+    //scrapePage(currentPage);
+    scrapePageGguid(currentPage);
   }
 
   void goToPreviousPage() {
     if (currentPage > 1) {
       currentPage = currentPage - 20;
-      scrapePage(currentPage);
+      //scrapePage(currentPage);
+      scrapePageGguid(currentPage);
     }
   }
 
@@ -316,22 +319,35 @@ class _MyHomePageState extends State<_MyHomePage> {
   Future<void> scrapePageGguid(int thispage) async {
     int totalpages = 0;
     int count = 0;
-    int waveint = grandWaves + bsDigital;
+    //int waveint = grandWaves + bsDigital + SKYPerfect;
 
     String wave = waveint.toString();
     List<Map<String, dynamic>> dataList = [];
 
-    String originalString = "King&Prince";
+    String originalString = idol;
     String encodedString = Uri.encodeComponent(
         originalString); //URL内に特殊文字や予約語（＆等）が含まれる場合にエンコードする、その文字を安全に表現するための方法
-     log(encodedString);
-
+    log("grand: $grandWaves");
+    log("bs: $bsDigital");
+    log("Sky: $skyPerfect");
+    log(originalString);
 
     // テレビ番組のスケジュールを取得するURLを設定します。
 
-    final uri =
-        Uri.parse('https://bangumi.org/search?q=$encodedString&area_code=23');
-    //https://bangumi.org/talents/keyword_search?q=HiHi jets
+    final uri = Uri.parse(
+        'https://bangumi.org/search?si_type%5B%5D=$grandWaves&si_type%5B%5D=$bsDigital&si_type%5B%5D=$skyPerfect&genre_id=%E5%85%A8%E3%81%A6&q=$originalString&area_code=23');
+    //https://bangumi.org/search?si_type%5B%5D=3&genre_id=%E5%85%A8%E3%81%A6&q=HiHI+jets&area_code=23
+
+    //https://bangumi.org/search?si_type%5B%5D=3&genre_id=%E5%85%A8%E3%81%A6&q=$encodedString&area_code=23 地上波 一覧
+    //https://bangumi.org/search?si_type%5B%5D=1&genre_id=%E5%85%A8%E3%81%A6&q=King%26Prince&area_code=23 BS 一覧
+    //https://bangumi.org/search?si_type%5B%5D=2&genre_id=%E5%85%A8%E3%81%A6&q=King%26Prince&area_code=23 sky　一覧
+    //https://bangumi.org/search?si_type%5B%5D=3&si_type%5B%5D=1&si_type%5B%5D=2&genre_id=%E5%85%A8%E3%81%A6&q=$encodedStringe&area_code=23 全部 一覧
+    //https://bangumi.org/search?si_type%5B%5D=3&si_type%5B%5D=1&genre_id=%E5%85%A8%E3%81%A6&q=HiHI%2B+jets&area_code=23  地上波+BS
+    //https://bangumi.org/search?si_type%5B%5D=1&si_type%5B%5D=2&genre_id=%E5%85%A8%E3%81%A6&q=HiHI%2B+jets&area_code=23  BS+SKY
+    //https://bangumi.org/search?si_type%5B%5D=3&si_type%5B%5D=2&genre_id=%E5%85%A8%E3%81%A6&q=HiHI%2B+jets&area_code=23  地上波+SKY
+
+    //https://bangumi.org/search?genre_id=%E5%85%A8%E3%81%A6&q=King+Prince&area_code=23
+
     final response = await http.get(uri);
     if (response.statusCode == 200) {
       final document = parser.parse(response.body);
@@ -389,11 +405,7 @@ class _MyHomePageState extends State<_MyHomePage> {
         "Date": "",
         "Day": "",
         "StartTime": "",
-        "From": "",
-        "EndTime": "",
-        "Airtime": "",
         "Channels": "",
-        "Channels2": ""
       };
       dataList.add(mapString);
     }
@@ -490,36 +502,16 @@ class _MyHomePageState extends State<_MyHomePage> {
                       onChanged: (value) {
                         setState(() {
                           selectedValue = value!;
-                          grandWaves = 0;
-                          bsDigital = 0;
-                          scrapePage(currentPage);
+                          grandWaves = "3";
+                          bsDigital = "1";
+                          skyPerfect = "2";
+                          //scrapePage(currentPage);
+                          scrapePageGguid(currentPage);
                         });
                       },
                     ),
                   ),
-                  const Text('G guide', style: TextStyle(color: Colors.white)),
-                ],
-              ),
-              Row(
-                children: [
-                  SizedBox(
-                    height: 25.0,
-                    width: 40.0,
-                    child: Radio(
-                      activeColor: Colors.orange,
-                      value: 1,
-                      groupValue: selectedValue,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedValue = value!;
-                          grandWaves = 0;
-                          bsDigital = 0;
-                          scrapePage(currentPage);
-                        });
-                      },
-                    ),
-                  ),
-                  const Text('Ground & BS Digital',
+                  const Text('Ground & BS & SKY Perfect',
                       style: TextStyle(color: Colors.white)),
                 ],
               ),
@@ -535,9 +527,11 @@ class _MyHomePageState extends State<_MyHomePage> {
                       onChanged: (value) {
                         setState(() {
                           selectedValue = value!;
-                          grandWaves = 1;
-                          bsDigital = 0;
-                          scrapePage(currentPage);
+                          grandWaves = "3";
+                          bsDigital = "9";
+                          skyPerfect = "9";
+                          //scrapePage(currentPage);
+                          scrapePageGguid(currentPage);
                         });
                       },
                     ),
@@ -558,14 +552,41 @@ class _MyHomePageState extends State<_MyHomePage> {
                       onChanged: (value) {
                         setState(() {
                           selectedValue = value!;
-                          grandWaves = 0;
-                          bsDigital = 2;
-                          scrapePage(currentPage);
+                          grandWaves = "9";
+                          bsDigital = "1";
+                          skyPerfect = "9";
+                          //scrapePage(currentPage);
+                          scrapePageGguid(currentPage);
                         });
                       },
                     ),
                   ),
                   const Text('BS Digital',
+                      style: TextStyle(color: Colors.white)),
+                ],
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    height: 25.0,
+                    width: 40.0,
+                    child: Radio(
+                      activeColor: Colors.orange,
+                      value: 4,
+                      groupValue: selectedValue,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedValue = value!;
+                          grandWaves = "9";
+                          bsDigital = "9";
+                          skyPerfect = "2";
+                          //scrapePage(currentPage);
+                          scrapePageGguid(currentPage);
+                        });
+                      },
+                    ),
+                  ),
+                  const Text('SKY Perfect',
                       style: TextStyle(color: Colors.white)),
                 ],
               ),
@@ -578,8 +599,8 @@ class _MyHomePageState extends State<_MyHomePage> {
         Column(
           children: List.generate(2, (rowIndex) {
             return Row(
-              children: List.generate(5, (columnIndex) {
-                final index = rowIndex * 5 + columnIndex;
+              children: List.generate(4, (columnIndex) {
+                final index = rowIndex * 4 + columnIndex;
                 return Column(children: [
                   const SizedBox(width: 105), // ボタンの間の間隔を設定
                   ElevatedButton(
@@ -610,8 +631,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                         }
                         idol = data[index]["SearchWard"];
                         currentPage = 0;
-                        scrapePage(currentPage);
-
+                        //scrapePage(currentPage);
+                        scrapePageGguid(currentPage);
                         //returnMap = _fetchStockTv(data[index]["SearchWard"]);
                       });
                     },
@@ -622,6 +643,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                           : const TextStyle(color: Colors.white),
                     ),
                   ),
+                  const SizedBox(height: 8), // 2行の間隔を設定
                 ]);
               }),
             );
@@ -831,7 +853,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                 setState(() {
                   //keyWord = value;
                   idol = value;
-                  scrapePage(0);
+                  //scrapePage(0);
+                  scrapePageGguid(0);
                   //scrapedData = _fetchStockTv(value);
                 });
               },
@@ -1024,8 +1047,7 @@ class _MyHomePageState extends State<_MyHomePage> {
             ]));
       });
 
-
-       listViewGguid(dynamic anystock) => ListView.builder(
+  listViewGguid(dynamic anystock) => ListView.builder(
       scrollDirection: Axis.vertical,
       itemCount: anystock!.length,
       itemBuilder: (BuildContext context, int index) {
@@ -1089,7 +1111,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                       ),
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           anystock[index]["Date"],
@@ -1114,30 +1136,6 @@ class _MyHomePageState extends State<_MyHomePage> {
                               color: Colors.yellow),
                         ),
                         Text(
-                          anystock[index]["StartTime"],
-                          style: const TextStyle(
-                              fontFamily: 'NoteSansJP',
-                              //fontWeight: FontWeight.bold,
-                              fontSize: 15.0,
-                              color: Colors.yellow),
-                        ),
-                        Text(
-                          anystock[index]["StartTime"],
-                          style: const TextStyle(
-                              fontFamily: 'NoteSansJP',
-                              //fontWeight: FontWeight.bold,
-                              fontSize: 15.0,
-                              color: Colors.yellow),
-                        ),
-                        Text(
-                          anystock[index]["StartTime"],
-                          style: const TextStyle(
-                              fontFamily: 'NoteSansJP',
-                              //fontWeight: FontWeight.bold,
-                              fontSize: 15.0,
-                              color: Colors.orange),
-                        ),
-                        Text(
                           anystock[index]["Channels"],
                           style: const TextStyle(
                               fontFamily: 'NoteSansJP',
@@ -1145,14 +1143,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                               fontSize: 15.0,
                               color: Colors.red),
                         ),
-                        Text(
-                          anystock[index]["StartTime"],
-                          style: const TextStyle(
-                              fontFamily: 'NoteSansJP',
-                              //fontWeight: FontWeight.bold,
-                              fontSize: 15.0,
-                              color: Colors.orange),
-                        ),
+                        
                       ],
                     ),
                   ],
@@ -1190,7 +1181,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                 //Expanded(
                 Container(
                   //width: 750,
-                  width: MediaQuery.of(context).size.width * 0.9,
+                  width: MediaQuery.of(context).size.width * 0.55,
                   // The height is not needed as it will be automatically adjusted by Expanded
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
@@ -1203,7 +1194,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                 Container(
                   margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                   //width: 750,
-                  width: MediaQuery.of(context).size.width * 0.9,
+                  width: MediaQuery.of(context).size.width * 0.5,
                   height: 50.0,
                   // The height is not needed as it will be automatically adjusted by Expanded
                   decoration: BoxDecoration(
@@ -1216,7 +1207,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                 Expanded(
                   child: Container(
                     //width: 750,
-                    width: MediaQuery.of(context).size.width * 0.9,
+                    width: MediaQuery.of(context).size.width * 0.5,
                     //height: 100,
                     // The height is not needed as it will be automatically adjusted by Expanded
                     decoration: BoxDecoration(
