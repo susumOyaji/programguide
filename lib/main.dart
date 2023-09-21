@@ -330,12 +330,15 @@ class _MyHomePageState extends State<_MyHomePage> {
     log("grand: $grandWaves");
     log("bs: $bsDigital");
     log("Sky: $skyPerfect");
-    log(originalString);
+    log("orig: $originalString");
 
     // テレビ番組のスケジュールを取得するURLを設定します。
 
+    //final uri = Uri.parse(
+    //    'https://bangumi.org/search?si_type%5B%5D=$grandWaves&si_type%5B%5D=$bsDigital&si_type%5B%5D=$skyPerfect&genre_id=%E5%85%A8%E3%81%A6&q=$originalString&area_code=23');
+
     final uri = Uri.parse(
-        'https://bangumi.org/search?si_type%5B%5D=$grandWaves&si_type%5B%5D=$bsDigital&si_type%5B%5D=$skyPerfect&genre_id=%E5%85%A8%E3%81%A6&q=$originalString&area_code=23');
+        'https://bangumi.org/talents/keyword_search?q=$originalString');
     //https://bangumi.org/search?si_type%5B%5D=3&genre_id=%E5%85%A8%E3%81%A6&q=HiHI+jets&area_code=23
 
     //https://bangumi.org/search?si_type%5B%5D=3&genre_id=%E5%85%A8%E3%81%A6&q=$encodedString&area_code=23 地上波 一覧
@@ -347,6 +350,120 @@ class _MyHomePageState extends State<_MyHomePage> {
     //https://bangumi.org/search?si_type%5B%5D=3&si_type%5B%5D=2&genre_id=%E5%85%A8%E3%81%A6&q=HiHI%2B+jets&area_code=23  地上波+SKY
 
     //https://bangumi.org/search?genre_id=%E5%85%A8%E3%81%A6&q=King+Prince&area_code=23
+    /*
+     <div class="talent_search_result_panel">
+            <ul>
+          			<li> <a href="/talents/310066">
+                    <img src="https://bangumi.org/assets/noimage_360x360-44b66a7f47961c438b383d6f3c19bd4898bc48d75f901e802bbd38428d7ffb7b.jpg" alt="no image">
+        					<p class="talent_name">King &amp; Prince</p>
+        					<!-- <p class="supplement"></p> -->
+          				</a>
+                </li>
+          			<li> <a href="/talents/237263">
+                    <img src="https://bangumi.org/assets/noimage_360x360-44b66a7f47961c438b383d6f3c19bd4898bc48d75f901e802bbd38428d7ffb7b.jpg" alt="no image">
+        					<p class="talent_name">永瀬 廉</p>
+        					<!-- <p class="supplement"></p> -->
+          				</a>
+                </li>
+          			<li> <a href="/talents/254278">
+                    <img src="https://bangumi.org/assets/noimage_360x360-44b66a7f47961c438b383d6f3c19bd4898bc48d75f901e802bbd38428d7ffb7b.jpg" alt="no image">
+        					<p class="talent_name">高橋 海人</p>
+        					<!-- <p class="supplement"></p> -->
+          				</a>
+                </li>
+        		</ul>
+          </div>
+
+
+
+           <main id="main">
+      <!-- -------------left------------- -->
+      <div id="left_column">
+        <div class="page_title">
+          <h1>「King&amp;Prince」のタレント検索結果</h1>
+          <p class="overview">
+              3人のタレントがヒットしました。
+          </p>
+        </div>
+    		<div id="talent_keyword_search" class="talent_search_maxwidth">
+    			<form id="search_form" action="/talents/keyword_search" method="get">
+    				<input id="sbox"  id="s" name="q" type="text" placeholder="King&amp;Prince"/>
+            <i class="fas fa-search"></i>
+    			</form>
+    		</div>
+
+          <div class="talent_search_result_panel">
+            <ul>
+          			<li> <a href="/talents/310066">
+                    <img src="https://bangumi.org/assets/noimage_360x360-44b66a7f47961c438b383d6f3c19bd4898bc48d75f901e802bbd38428d7ffb7b.jpg" alt="no image">
+        					<p class="talent_name">King &amp; Prince</p>
+        					<!-- <p class="supplement"></p> -->
+          				</a>
+                </li>
+          			<li> <a href="/talents/237263">
+                    <img src="https://bangumi.org/assets/noimage_360x360-44b66a7f47961c438b383d6f3c19bd4898bc48d75f901e802bbd38428d7ffb7b.jpg" alt="no image">
+        					<p class="talent_name">永瀬 廉</p>
+        					<!-- <p class="supplement"></p> -->
+          				</a>
+                </li>
+          			<li> <a href="/talents/254278">
+                    <img src="https://bangumi.org/assets/noimage_360x360-44b66a7f47961c438b383d6f3c19bd4898bc48d75f901e802bbd38428d7ffb7b.jpg" alt="no image">
+        					<p class="talent_name">高橋 海人</p>
+        					<!-- <p class="supplement"></p> -->
+          				</a>
+                </li>
+        		</ul>
+          </div>
+
+*/
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      final document = parser.parse(response.body);
+
+      // スクレイピング対象の要素を抽出して処理
+      //List<Map<String, dynamic>> newData = extractData(document); // 必要に応じて関数を実装
+      setState(() {
+        extractTalentGguid(document);
+        //scrapedData = extractDataGguid(document); //newData;
+        //fraction = "${(extractedNumber / 20).ceil()}/$totalpages";
+      });
+    } else {
+      log('Failed to load page');
+    }
+  }
+
+  Future<void> extractTalentGguid(document) async {
+    List<Map<String, dynamic>> dataList = [];
+
+    // 全ての <li> タグを取得
+    var liElements = document.querySelectorAll('.talent_name');
+    //log("liElements.length: ${liElements.toString()}");
+
+    // "div" タグ内の "a" タグ要素を取得
+    var divElement = document.querySelector('div.talent_search_result_panel');
+    if (divElement != null) {
+      var aElements = divElement.querySelectorAll('a');
+      for (var element in aElements) {
+        var href = element.attributes['href'];
+        var talentName = element.querySelector('.talent_name')?.text;
+
+        Map<String, dynamic> mapString = {
+          'href': href,
+          'talent_name': talentName,
+        };
+        dataList.add(mapString);
+      }
+    } else {
+      Map<String, dynamic> mapString = {
+        'href': "talents/",
+        'talent_name': "talentName",
+      };
+      dataList.add(mapString);
+    }
+
+    log(dataList.isEmpty ? "null" : dataList[0]["href"]);
+    
+    final uri = Uri.parse('https://bangumi.org/${dataList[0]["href"]}');
 
     final response = await http.get(uri);
     if (response.statusCode == 200) {
@@ -361,6 +478,9 @@ class _MyHomePageState extends State<_MyHomePage> {
     } else {
       log('Failed to load page');
     }
+
+    //List<Map<String, String>> results = [];
+    //return results;
   }
 
   Future<List<Map<String, dynamic>>> extractDataGguid(document) async {
@@ -487,7 +607,7 @@ class _MyHomePageState extends State<_MyHomePage> {
             unselectedWidgetColor: Colors.yellow,
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -1143,7 +1263,6 @@ class _MyHomePageState extends State<_MyHomePage> {
                               fontSize: 15.0,
                               color: Colors.red),
                         ),
-                        
                       ],
                     ),
                   ],
