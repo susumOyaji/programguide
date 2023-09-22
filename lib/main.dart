@@ -91,8 +91,8 @@ class _MyHomePageState extends State<_MyHomePage> {
 
     idol = ""; //data[index]["SearchWard"];
     currentPage = 0;
-    //scrapePage(currentPage);
-    scrapePageGguid(currentPage);
+    scrapePage(currentPage);
+    //scrapePageGguid(currentPage);
     //deleteData();
   }
 
@@ -184,15 +184,15 @@ class _MyHomePageState extends State<_MyHomePage> {
 
   void goToNextPage() {
     currentPage = currentPage + 20;
-    //scrapePage(currentPage);
-    scrapePageGguid(currentPage);
+    scrapePage(currentPage);
+    //scrapePageGguid(currentPage);
   }
 
   void goToPreviousPage() {
     if (currentPage > 1) {
       currentPage = currentPage - 20;
-      //scrapePage(currentPage);
-      scrapePageGguid(currentPage);
+      scrapePage(currentPage);
+      //scrapePageGguid(currentPage);
     }
   }
 
@@ -202,7 +202,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     //page = startpage.toString();
     log(idol);
     //int waveint = grandWaves + bsDigital;
-    String wave = (grandWaves + bsDigital).toString();
+    String wave = "0"; //(grandWaves + bsDigital).toString();
 
     String originalString = idol;
     String encodedString = Uri.encodeComponent(
@@ -338,7 +338,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     //    'https://bangumi.org/search?si_type%5B%5D=$grandWaves&si_type%5B%5D=$bsDigital&si_type%5B%5D=$skyPerfect&genre_id=%E5%85%A8%E3%81%A6&q=$originalString&area_code=23');
 
     final uri = Uri.parse(
-        'https://bangumi.org/talents/keyword_search?q=$originalString');
+    'https://bangumi.org/talents/keyword_search?q=$originalString');
     //https://bangumi.org/search?si_type%5B%5D=3&genre_id=%E5%85%A8%E3%81%A6&q=HiHI+jets&area_code=23
 
     //https://bangumi.org/search?si_type%5B%5D=3&genre_id=%E5%85%A8%E3%81%A6&q=$encodedString&area_code=23 地上波 一覧
@@ -350,75 +350,24 @@ class _MyHomePageState extends State<_MyHomePage> {
     //https://bangumi.org/search?si_type%5B%5D=3&si_type%5B%5D=2&genre_id=%E5%85%A8%E3%81%A6&q=HiHI%2B+jets&area_code=23  地上波+SKY
 
     //https://bangumi.org/search?genre_id=%E5%85%A8%E3%81%A6&q=King+Prince&area_code=23
-    /*
-     <div class="talent_search_result_panel">
-            <ul>
-          			<li> <a href="/talents/310066">
-                    <img src="https://bangumi.org/assets/noimage_360x360-44b66a7f47961c438b383d6f3c19bd4898bc48d75f901e802bbd38428d7ffb7b.jpg" alt="no image">
-        					<p class="talent_name">King &amp; Prince</p>
-        					<!-- <p class="supplement"></p> -->
-          				</a>
-                </li>
-          			<li> <a href="/talents/237263">
-                    <img src="https://bangumi.org/assets/noimage_360x360-44b66a7f47961c438b383d6f3c19bd4898bc48d75f901e802bbd38428d7ffb7b.jpg" alt="no image">
-        					<p class="talent_name">永瀬 廉</p>
-        					<!-- <p class="supplement"></p> -->
-          				</a>
-                </li>
-          			<li> <a href="/talents/254278">
-                    <img src="https://bangumi.org/assets/noimage_360x360-44b66a7f47961c438b383d6f3c19bd4898bc48d75f901e802bbd38428d7ffb7b.jpg" alt="no image">
-        					<p class="talent_name">高橋 海人</p>
-        					<!-- <p class="supplement"></p> -->
-          				</a>
-                </li>
-        		</ul>
-          </div>
 
-
-
-           <main id="main">
-      <!-- -------------left------------- -->
-      <div id="left_column">
-        <div class="page_title">
-          <h1>「King&amp;Prince」のタレント検索結果</h1>
-          <p class="overview">
-              3人のタレントがヒットしました。
-          </p>
-        </div>
-    		<div id="talent_keyword_search" class="talent_search_maxwidth">
-    			<form id="search_form" action="/talents/keyword_search" method="get">
-    				<input id="sbox"  id="s" name="q" type="text" placeholder="King&amp;Prince"/>
-            <i class="fas fa-search"></i>
-    			</form>
-    		</div>
-
-          <div class="talent_search_result_panel">
-            <ul>
-          			<li> <a href="/talents/310066">
-                    <img src="https://bangumi.org/assets/noimage_360x360-44b66a7f47961c438b383d6f3c19bd4898bc48d75f901e802bbd38428d7ffb7b.jpg" alt="no image">
-        					<p class="talent_name">King &amp; Prince</p>
-        					<!-- <p class="supplement"></p> -->
-          				</a>
-                </li>
-          			<li> <a href="/talents/237263">
-                    <img src="https://bangumi.org/assets/noimage_360x360-44b66a7f47961c438b383d6f3c19bd4898bc48d75f901e802bbd38428d7ffb7b.jpg" alt="no image">
-        					<p class="talent_name">永瀬 廉</p>
-        					<!-- <p class="supplement"></p> -->
-          				</a>
-                </li>
-          			<li> <a href="/talents/254278">
-                    <img src="https://bangumi.org/assets/noimage_360x360-44b66a7f47961c438b383d6f3c19bd4898bc48d75f901e802bbd38428d7ffb7b.jpg" alt="no image">
-        					<p class="talent_name">高橋 海人</p>
-        					<!-- <p class="supplement"></p> -->
-          				</a>
-                </li>
-        		</ul>
-          </div>
-
-*/
     final response = await http.get(uri);
     if (response.statusCode == 200) {
       final document = parser.parse(response.body);
+
+      log(document.outerHtml);
+      var ulElement = document.querySelector('data-sec=');
+      if (ulElement != null) {
+        // ulElement以下の特定のクラスを検出します
+        var classToFind =
+            "programListItemTitleLink"; // 例: "programListItemTitleLink" クラスを検出
+        var elementsWithClass = ulElement.querySelectorAll(".$classToFind");
+        log(elementsWithClass.toString());
+        // 検出された要素を処理します
+        for (var element in elementsWithClass) {
+          log(element.text); // 要素のテキストを表示
+        }
+      }
 
       // スクレイピング対象の要素を抽出して処理
       //List<Map<String, dynamic>> newData = extractData(document); // 必要に応じて関数を実装
@@ -462,7 +411,8 @@ class _MyHomePageState extends State<_MyHomePage> {
     }
 
     log(dataList.isEmpty ? "null" : dataList[0]["href"]);
-    
+    log(dataList.toString());
+
     final uri = Uri.parse('https://bangumi.org/${dataList[0]["href"]}');
 
     final response = await http.get(uri);
@@ -511,9 +461,9 @@ class _MyHomePageState extends State<_MyHomePage> {
           Map<String, dynamic> mapString = {
             "Title": element.text,
             "Date": codeArray[0],
-            "Day": codeArray[1],
-            "StartTime": codeArray[2],
-            "Channels": codeArray[3],
+            "Day": codeArray[9],
+            "StartTime": codeArray[18],
+            "Channels": codeArray[19],
           };
           dataList.add(mapString);
           index++;
@@ -625,8 +575,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                           grandWaves = "3";
                           bsDigital = "1";
                           skyPerfect = "2";
-                          //scrapePage(currentPage);
-                          scrapePageGguid(currentPage);
+                          scrapePage(currentPage);
+                          //scrapePageGguid(currentPage);
                         });
                       },
                     ),
@@ -650,8 +600,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                           grandWaves = "3";
                           bsDigital = "9";
                           skyPerfect = "9";
-                          //scrapePage(currentPage);
-                          scrapePageGguid(currentPage);
+                          scrapePage(currentPage);
+                          //scrapePageGguid(currentPage);
                         });
                       },
                     ),
@@ -675,8 +625,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                           grandWaves = "9";
                           bsDigital = "1";
                           skyPerfect = "9";
-                          //scrapePage(currentPage);
-                          scrapePageGguid(currentPage);
+                          scrapePage(currentPage);
+                          //scrapePageGguid(currentPage);
                         });
                       },
                     ),
@@ -700,8 +650,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                           grandWaves = "9";
                           bsDigital = "9";
                           skyPerfect = "2";
-                          //scrapePage(currentPage);
-                          scrapePageGguid(currentPage);
+                          scrapePage(currentPage);
+                          //scrapePageGguid(currentPage);
                         });
                       },
                     ),
@@ -751,8 +701,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                         }
                         idol = data[index]["SearchWard"];
                         currentPage = 0;
-                        //scrapePage(currentPage);
-                        scrapePageGguid(currentPage);
+                        scrapePage(currentPage);
+                        //scrapePageGguid(currentPage);
                         //returnMap = _fetchStockTv(data[index]["SearchWard"]);
                       });
                     },
@@ -973,8 +923,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                 setState(() {
                   //keyWord = value;
                   idol = value;
-                  //scrapePage(0);
-                  scrapePageGguid(0);
+                  scrapePage(0);
+                  //scrapePageGguid(0);
                   //scrapedData = _fetchStockTv(value);
                 });
               },
@@ -1333,8 +1283,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                       borderRadius: BorderRadius.circular(5),
                       color: Colors.black,
                     ),
-                    //child: listView(dataList),
-                    child: listViewGguid(dataList),
+                    child: listView(dataList),
+                    //child: listViewGguid(dataList),
                   ),
                 ),
                 //Expanded(
