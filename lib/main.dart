@@ -941,7 +941,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                 children: [
                   const Text('Number of Detected Pages:  ',
                       style:
-                          TextStyle(color: Colors.greenAccent, fontSize: 16)),
+                          TextStyle(color: Colors.greenAccent, fontSize: 12)),
                   ElevatedButton(
                     onPressed: () {
                       goToPreviousPage();
@@ -954,7 +954,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                     child: const Icon(Icons.arrow_left),
                   ),
                   SizedBox(
-                    width: 70.0,
+                    width: 60.0,
                     child: Text(
                       fraction,
                       style: const TextStyle(
@@ -1238,7 +1238,7 @@ class _MyHomePageState extends State<_MyHomePage> {
           List<Map<String, dynamic>> dataList = snapshot.data!;
           return Container(
             //width: 1800,
-            width: MediaQuery.of(context).size.width * 1.5,
+            width: MediaQuery.of(context).size.width * 1.0,
             height: 1500,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
@@ -1250,7 +1250,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                 //Expanded(
                 Container(
                   //width: 750,
-                  width: MediaQuery.of(context).size.width * 0.55,
+                  width: MediaQuery.of(context).size.width * 0.9,
                   // The height is not needed as it will be automatically adjusted by Expanded
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
@@ -1263,7 +1263,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                 Container(
                   margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                   //width: 750,
-                  width: MediaQuery.of(context).size.width * 0.5,
+                  width: MediaQuery.of(context).size.width * 0.9,
                   height: 50.0,
                   // The height is not needed as it will be automatically adjusted by Expanded
                   decoration: BoxDecoration(
@@ -1276,7 +1276,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                 Expanded(
                   child: Container(
                     //width: 750,
-                    width: MediaQuery.of(context).size.width * 0.5,
+                    width: MediaQuery.of(context).size.width * 0.9,
                     //height: 100,
                     // The height is not needed as it will be automatically adjusted by Expanded
                     decoration: BoxDecoration(
