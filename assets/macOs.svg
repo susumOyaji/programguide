@@ -23,28 +23,59 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="0.2973261"
-     inkscape:cx="785.33301"
-     inkscape:cy="645.75562"
+     showgrid="true"
+     inkscape:zoom="0.5"
+     inkscape:cx="541"
+     inkscape:cy="534"
      inkscape:window-width="1280"
      inkscape:window-height="709"
      inkscape:window-x="0"
      inkscape:window-y="23"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       id="grid1"
+       units="px"
+       originx="0"
+       originy="0"
+       spacingx="0.26458333"
+       spacingy="0.26458333"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="5"
+       dotted="false"
+       gridanglex="30"
+       gridanglez="30"
+       visible="true" />
+  </sodipodi:namedview>
   <defs
      id="defs1" />
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"
-     style="opacity:0.5;fill:#ff0000;stroke:#000000;stroke-opacity:1">
+     id="layer1">
+    <ellipse
+       style="fill-opacity:1;stroke:#040804;stroke-width:6.15897;stroke-linejoin:bevel;stroke-miterlimit:0;fill:#ff1000;stroke-opacity:1"
+       id="path1"
+       cx="143.68408"
+       cy="129.83954"
+       rx="104.0213"
+       ry="97.660286" />
     <rect
-       style="fill:#ff0000;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
-       id="rect1"
-       width="270.52228"
-       height="268.74252"
-       x="-0.88987589"
-       y="1.7797518" />
+       style="opacity:1;mix-blend-mode:normal;fill:#ffff00;fill-opacity:1;stroke:#0a0a0a;stroke-width:6;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+       id="rect6"
+       width="143.68408"
+       height="141.43904"
+       x="14.967093"
+       y="19.457222" />
+    <ellipse
+       style="fill:#0000ff;fill-opacity:1;stroke:#ffb608;stroke-width:6.15897;stroke-linejoin:bevel;stroke-miterlimit:0;stroke-opacity:1"
+       id="path6"
+       cx="194.94638"
+       cy="211.03601"
+       rx="54.255711"
+       ry="55.378242" />
   </g>
 </svg>
